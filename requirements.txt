@@ -1,0 +1,9 @@
+torch
+torchvision
+datasets
+numpy
+Pillow
+matplotlib
+tqdm
+gradio
+jupyter
