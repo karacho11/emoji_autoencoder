@@ -33,8 +33,8 @@ def train(
         model.train()
         running_train_loss = 0.0
 
-        for batch in train_dl:
-            images = batch.to(device)
+        for images, _ in train_dl:
+            images = images.to(device)
             recon = model(images)
             loss = criterion(recon, images)
 
@@ -51,8 +51,8 @@ def train(
         running_val_loss = 0.0
 
         with torch.no_grad():
-            for batch in val_dl:
-                images = batch.to(device)
+            for images, _ in val_dl:
+                images = images.to(device)
                 recon = model(images)
                 loss = criterion(recon, images)
                 running_val_loss += loss.item() * images.size(0)

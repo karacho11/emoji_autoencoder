@@ -60,7 +60,7 @@ class ConvAutoencoder(nn.Module):
     def decode(self, z):
         x = self.unflatten(z)
         x = x.view(-1, 256, 4, 4)
-        x = self.decode(x)
+        x = self.decoder(x)
         return x
     
     def forward(self, x):
