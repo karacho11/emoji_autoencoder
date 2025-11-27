@@ -12,6 +12,8 @@ def find_idx_with(substring, texts):
     """
     substring = substring.lower()
     lst = [i for i, t in enumerate(texts) if substring in t.lower()]
+    if not lst:
+        raise ValueError(f"No texts contain substring: {substring!r}")
     return lst[0]
 
 
@@ -43,8 +45,12 @@ def generate_new_image(
     device: str = "cuda" if torch.cuda.is_available() else "cpu",
 ):
     """
-    With x_unshuffled, and indicies [idx_w_attr, idx_wo_attr, idx_base], 
-    calculates attr_vector -> z_with - z_wo and generates an image with z_new = z_base + alpha * attr_vector
+    Given indices [idx_w_attr, idx_wo_attr, idx_base], compute:
+
+        attr_vector = z_with - z_wo
+        z_new  = z_base + alpha * attr_vector
+
+    and decode into a new image.
 
     Returns: a generated image
     """
@@ -61,55 +67,5 @@ def generate_new_image(
     gen_img = model.decode(z_new)
 
     return gen_img
-
-
-
-
-
-
-@torch.no_grad()
-def compute_attribute_vector(
-    model: ConvAutoencoder,
-    x_unshuffled: torch.Tensor,
-    idx_with_attr: int,
-    idx_wo_attr: int,
-    device: str = "cuda" if torch.cuda.is_available() else "cpu",
-):
-    """
-    Returns: attribute vector
-    """
-    z_with = encode_by_index(model, x_unshuffled, idx_with_attr, device=device)
-    z_wo = encode_by_index(model, x_unshuffled, idx_wo_attr, device=device)
-
-    attr_vector = z_with - z_wo
-
-    return attr_vector
-
-@torch.no_grad()
-def apply_attribute(
-    model: ConvAutoencoder,
-    x_unshuffled: torch.Tensor,
-    idx_base: int,
-    v_attr: torch.Tensor,
-    alpha: float = 1.0,
-    device: str = "cuda" if torch.cuda.is_available() else "cpu",
-):
-    """
-    Returns: a generated image
-    """
-    img = x_unshuffled[idx_base].unsqueeze(0).to(device)
-    z_base = model.encode(img)
-
-    z_new = z_base + alpha * v_attr
-    gen_img = model.decode(z_new)
-
-    return gen_img
-
-
-
-
-    
-
-
 
 
