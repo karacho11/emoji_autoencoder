@@ -7,12 +7,11 @@ A convolutional autoencoder trained on the [valhalla/emoji-dataset] emoji images
 
 ## Motivation
 
-Emoji are simple but expressive visual symbols – perfect for experimenting with deep learning on images.  
 This project turns a class assignment on emoji autoencoders into a full portfolio project:
 
 - Train a convolutional autoencoder to reconstruct emoji images
 - Explore the structure of the latent space
-- Learn **attribute vectors** (e.g., “+ glasses”, “+ hearts”, “+ tears”)
+- Learn attribute vectors (e.g., “+ glasses”, “+ hearts”, “+ tears”)
 - Build a small app where users can pick a base emoji + attribute and generate new emojis
 
 ---
@@ -38,16 +37,16 @@ For training, images are:
 ### Convolutional Autoencoder
 
 - **Encoder**
-  - 4 convolutional layers with stride 2, ReLU
+  - 4 convolutional layers with kernel size 3, stride 2, LeakyReLU, and BatchNorm
   - Input: `(3, 64, 64)`
-  - Bottleneck: `latent_dim`-dimensional vector (e.g., 128)
+  - Bottleneck: `latent_dim`-dimensional vector (e.g., 1024)
 
 - **Decoder**
-  - 4 transpose-convolution layers with stride 2, ReLU
+  - 4 transpose-convolution layers with kernel size 3, stride 2, LeakyReLU, and BatchNorm
   - Final layer uses `Sigmoid` to output pixels in `[0, 1]`
 
 - **Loss**
-  - Mean Squared Error (MSE) between input and reconstructed image
+  - L1 loss between input and reconstructed image
 
 - **Optimizer**
   - Adam (default LR: `1e-3`)
